@@ -13,6 +13,14 @@ function drawCircle() {
   ctx.fill();
 }
 
+function logButtonPress(button) {
+  fetch('http://localhost:3017/message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `Button pressed: ${button}` })
+  });
+}
+
 canvas.addEventListener('click', (e) => {
   const dist = Math.hypot(e.clientX - circle.x, e.clientY - circle.y);
   if (dist <= circle.radius) {
@@ -21,6 +29,14 @@ canvas.addEventListener('click', (e) => {
 });
 
 document.getElementById('changeCircle').addEventListener('click', () => {
+  logButtonPress('changeCircle');
+  fetch('/logButtonPress', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ button: 'changeCircle' })
+  });
   circle.x = Math.random() * canvas.width;
   circle.y = Math.random() * canvas.height;
   circle.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -28,11 +44,37 @@ document.getElementById('changeCircle').addEventListener('click', () => {
 });
 
 document.getElementById('changeBackground').addEventListener('click', () => {
+  logButtonPress('changeBackground');
+  fetch('/logButtonPress', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ button: 'changeBackground' })
+  });
   canvas.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 });
 
 document.getElementById('logCanvasState').addEventListener('click', () => {
+  logButtonPress('logCanvasState');
+  fetch('/logButtonPress', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ button: 'logCanvasState' })
+  });
   console.log({ circle, backgroundColor: canvas.style.backgroundColor });
+  fetch('/logCanvasState', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ circle, backgroundColor: canvas.style.backgroundColor })
+  })
+    .then(response => response.json())
+    .then(data => console.log('Server response:', data))
+    .catch(error => console.error('Error:', error));
 });
 
 drawCircle();
