@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend Console</title>
+</head>
+<body>
+  <input type="text" id="message" placeholder="Enter message">
+  <button id="send">Send</button>
+  <ul id="log"></ul>
+  <script>
+    const log = document.getElementById('log');
+    document.getElementById('send').addEventListener('click', () => {
+      const message = document.getElementById('message').value;
+      fetch('http://localhost:3017/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      }).then(() => {
+        const li = document.createElement('li');
+        li.textContent = `Sent: ${message}`;
+        log.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>
